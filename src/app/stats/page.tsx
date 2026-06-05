@@ -68,9 +68,11 @@ function ExpiryDetailList({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="font-bold text-[#3d2a1a]">{item.name}</div>
+
                 <div className="mt-1 text-xs text-gray-400">
                   到期日：{formatDate(item.expireDate)}
                 </div>
+
                 <div className="mt-1 text-xs text-gray-400">
                   現有：{item.qty} {item.unit}
                 </div>
@@ -170,22 +172,54 @@ export default function StatsPage() {
             <div className="mt-1 text-xs text-gray-500">總貨品</div>
           </div>
 
-          <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-center shadow-sm">
-            <div className="text-3xl font-bold text-red-600">
+          <div
+            className={`rounded-2xl border p-4 text-center shadow-sm ${
+              lowStockCount > 0
+                ? "border-red-200 bg-red-50"
+                : "border-[#e8d4b8] bg-white"
+            }`}
+          >
+            <div
+              className={`text-3xl font-bold ${
+                lowStockCount > 0 ? "text-red-600" : "text-[#8b5e3c]"
+              }`}
+            >
               {lowStockCount}
             </div>
             <div className="mt-1 text-xs text-gray-500">需要補貨</div>
           </div>
 
-          <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-center shadow-sm">
-            <div className="text-3xl font-bold text-yellow-700">
+          <div
+            className={`rounded-2xl border p-4 text-center shadow-sm ${
+              warningStockCount > 0
+                ? "border-yellow-200 bg-yellow-50"
+                : "border-[#e8d4b8] bg-white"
+            }`}
+          >
+            <div
+              className={`text-3xl font-bold ${
+                warningStockCount > 0
+                  ? "text-yellow-700"
+                  : "text-[#8b5e3c]"
+              }`}
+            >
               {warningStockCount}
             </div>
             <div className="mt-1 text-xs text-gray-500">接近最低</div>
           </div>
 
-          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4 text-center shadow-sm">
-            <div className="text-3xl font-bold text-orange-500">
+          <div
+            className={`rounded-2xl border p-4 text-center shadow-sm ${
+              zeroStockCount > 0
+                ? "border-orange-200 bg-orange-50"
+                : "border-[#e8d4b8] bg-white"
+            }`}
+          >
+            <div
+              className={`text-3xl font-bold ${
+                zeroStockCount > 0 ? "text-orange-500" : "text-[#8b5e3c]"
+              }`}
+            >
               {zeroStockCount}
             </div>
             <div className="mt-1 text-xs text-gray-500">已清零</div>
@@ -240,12 +274,22 @@ export default function StatsPage() {
           <button
             onClick={() => togglePanel("due30")}
             className={`rounded-2xl border p-4 text-center shadow-sm ${
-              activePanel === "due30"
-                ? "border-yellow-400 bg-yellow-100"
-                : "border-yellow-200 bg-yellow-50"
+              due30Items.length > 0
+                ? activePanel === "due30"
+                  ? "border-yellow-400 bg-yellow-100"
+                  : "border-yellow-200 bg-yellow-50"
+                : activePanel === "due30"
+                ? "border-[#c89d6f] bg-[#fff8ef]"
+                : "border-[#e8d4b8] bg-white"
             }`}
           >
-            <div className="text-3xl font-bold text-yellow-700">
+            <div
+              className={`text-3xl font-bold ${
+                due30Items.length > 0
+                  ? "text-yellow-700"
+                  : "text-[#8b5e3c]"
+              }`}
+            >
               {due30Items.length}
             </div>
             <div className="mt-1 text-xs text-gray-500">30日內到期</div>
