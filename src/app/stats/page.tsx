@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import PageContainer from "@/components/ui/PageContainer";
 import { usePantry } from "@/components/context/PantryContext";
 import type { Item } from "@/types/item";
@@ -9,7 +10,6 @@ type ExpiryPanel = "expired" | "due7" | "due30" | null;
 
 function getAveragePrice(item: Item) {
   if (!item.prices.length) return null;
-
   const total = item.prices.reduce((sum, record) => sum + record.price, 0);
   return total / item.prices.length;
 }
@@ -123,7 +123,7 @@ export default function StatsPage() {
   const totalItems = items.length;
   const lowStockCount = items.filter((item) => item.qty < item.minQty).length;
   const warningStockCount = items.filter(
-    (item) => item.qty === item.minQty
+    (item) => item.minQty > 0 && item.qty === item.minQty
   ).length;
   const zeroStockCount = items.filter((item) => item.qty === 0).length;
 
@@ -165,12 +165,15 @@ export default function StatsPage() {
         <p className="mt-1 text-sm text-[#7a5c3c]">目前存貨概覽</p>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-[#e8d4b8] bg-white p-4 text-center shadow-sm">
+          <Link
+            href="/stats/items"
+            className="block rounded-2xl border border-[#e8d4b8] bg-white p-4 text-center shadow-sm"
+          >
             <div className="text-3xl font-bold text-[#8b5e3c]">
               {totalItems}
             </div>
             <div className="mt-1 text-xs text-gray-500">總貨品</div>
-          </div>
+          </Link>
 
           <div
             className={`rounded-2xl border p-4 text-center shadow-sm ${
@@ -295,12 +298,15 @@ export default function StatsPage() {
             <div className="mt-1 text-xs text-gray-500">30日內到期</div>
           </button>
 
-          <div className="rounded-2xl border border-[#e8d4b8] bg-white p-4 text-center shadow-sm">
+          <Link
+            href="/stats/items"
+            className="block rounded-2xl border border-[#e8d4b8] bg-white p-4 text-center shadow-sm"
+          >
             <div className="text-2xl font-bold text-[#8b5e3c]">
               £{totalStockValue.toFixed(2)}
             </div>
             <div className="mt-1 text-xs text-gray-500">存貨總值</div>
-          </div>
+          </Link>
         </div>
 
         {activePanel === "expired" && (
@@ -321,9 +327,10 @@ export default function StatsPage() {
           <div className="mt-3 space-y-3">
             {itemsWithPrices.length > 0 ? (
               itemsWithPrices.map((item) => (
-                <div
+                <Link
+                  href={`/stats/items?item=${encodeURIComponent(item.id)}`}
                   key={item.id}
-                  className="rounded-2xl border border-[#e8d4b8] bg-white p-4 shadow-sm"
+                  className="block rounded-2xl border border-[#e8d4b8] bg-white p-4 shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>
@@ -342,7 +349,7 @@ export default function StatsPage() {
                       <div className="text-xs text-gray-400">平均價</div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))
             ) : (
               <div className="rounded-2xl border border-dashed border-[#e8d4b8] bg-white p-8 text-center text-sm text-gray-400">
