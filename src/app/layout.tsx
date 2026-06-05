@@ -2,6 +2,13 @@ import "./globals.css";
 import TopBar from "@/components/layout/TopBar";
 import BottomNav from "@/components/layout/BottomNav";
 import { PantryProvider } from "@/components/context/PantryContext";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "306 Pantry",
+  description: "Nana Pantry",
+  applicationName: "306 Pantry",
+};
 
 export default function RootLayout({
   children,

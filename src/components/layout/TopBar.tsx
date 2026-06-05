@@ -5,10 +5,10 @@ export default function TopBar() {
         <div className="text-2xl">🐕</div>
         <div>
           <div className="text-sm font-bold text-[#8b5e3c]">
-            柴犬存貨本
+            狗島肉兄
           </div>
           <div className="text-[10px] text-[#b09070]">
-            FAMILY PANTRY
+            YuDOG 306
           </div>
         </div>
       </div>
