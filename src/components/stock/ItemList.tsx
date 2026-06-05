@@ -234,6 +234,7 @@ export default function ItemList({
       <AddItemModal
         open={openAddModal}
         categories={categories}
+        items={items}
         editingItem={editingItem}
         onClose={() => {
           setOpenAddModal(false);

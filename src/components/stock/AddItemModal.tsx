@@ -8,6 +8,7 @@ import type { Item } from "@/types/item";
 type Props = {
   open: boolean;
   categories?: Category[];
+  items?: Item[];
   editingItem?: Item | null;
   onClose: () => void;
   onAdd: (item: Item) => void;
@@ -17,6 +18,7 @@ type Props = {
 export default function AddItemModal({
   open,
   categories = [],
+  items = [],
   editingItem,
   onClose,
   onAdd,
@@ -90,7 +92,22 @@ export default function AddItemModal({
 
   const handleSubmit = () => {
     const trimmedName = name.trim();
+    const duplicatedItem = items.find((item) => {
+      if (editingItem && item.id === editingItem.id) {
+        return false;
+      }
 
+      return (
+        item.name.trim().toLowerCase() ===
+        trimmedName.toLowerCase()
+      );
+    });
+
+    if (duplicatedItem) {
+      alert("已存在相同貨品名稱");
+      return;
+    }
+    
     if (!trimmedName) {
       alert("請輸入貨品名稱");
       return;
