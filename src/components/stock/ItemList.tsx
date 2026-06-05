@@ -8,6 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "@/lib/supabase/pantry";
+import { addPendingAction } from "@/lib/offline/pendingActions";
 
 import ItemCard from "./ItemCard";
 import CategoryTabs from "./CategoryTabs";
@@ -21,17 +22,55 @@ type Props = {
   onManageCategories: () => void;
 };
 
+function pendingId() {
+  return crypto.randomUUID();
+}
+
 export default function ItemList({
   items,
   setItems,
   onManageCategories,
 }: Props) {
-  const { categories } = usePantry();
+  const {
+    categories,
+    isOnline,
+    refreshPendingActionCount,
+  } = usePantry();
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [openAddModal, setOpenAddModal] = useState(false);
+
+  const queueUpdate = (item: Item) => {
+    addPendingAction({
+      id: pendingId(),
+      type: "update",
+      item,
+      createdAt: new Date().toISOString(),
+    });
+    refreshPendingActionCount();
+  };
+
+  const queueCreate = (item: Item) => {
+    addPendingAction({
+      id: pendingId(),
+      type: "create",
+      item,
+      createdAt: new Date().toISOString(),
+    });
+    refreshPendingActionCount();
+  };
+
+  const queueDelete = (id: string) => {
+    addPendingAction({
+      id: pendingId(),
+      type: "delete",
+      itemId: id,
+      createdAt: new Date().toISOString(),
+    });
+    refreshPendingActionCount();
+  };
 
   const handleIncrease = async (id: string) => {
     const target = items.find((item) => item.id === id);
@@ -43,11 +82,16 @@ export default function ItemList({
       prev.map((item) => (item.id === id ? updatedItem : item))
     );
 
+    if (!isOnline) {
+      queueUpdate(updatedItem);
+      return;
+    }
+
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to update item", error);
-      alert("同步失敗，請再試");
+      console.error("Failed to update item, saved offline", error);
+      queueUpdate(updatedItem);
     }
   };
 
@@ -61,22 +105,32 @@ export default function ItemList({
       prev.map((item) => (item.id === id ? updatedItem : item))
     );
 
+    if (!isOnline) {
+      queueUpdate(updatedItem);
+      return;
+    }
+
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to update item", error);
-      alert("同步失敗，請再試");
+      console.error("Failed to update item, saved offline", error);
+      queueUpdate(updatedItem);
     }
   };
 
   const handleAddItem = async (newItem: Item) => {
     setItems((prev) => [newItem, ...prev]);
 
+    if (!isOnline) {
+      queueCreate(newItem);
+      return;
+    }
+
     try {
       await createItem(newItem);
     } catch (error) {
-      console.error("Failed to create item", error);
-      alert("新增失敗，請再試");
+      console.error("Failed to create item, saved offline", error);
+      queueCreate(newItem);
     }
   };
 
@@ -92,11 +146,16 @@ export default function ItemList({
     );
     setEditingItem(null);
 
+    if (!isOnline) {
+      queueUpdate(updatedItem);
+      return;
+    }
+
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to edit item", error);
-      alert("更新失敗，請再試");
+      console.error("Failed to edit item, saved offline", error);
+      queueUpdate(updatedItem);
     }
   };
 
@@ -106,11 +165,16 @@ export default function ItemList({
 
     setItems((prev) => prev.filter((item) => item.id !== id));
 
+    if (!isOnline) {
+      queueDelete(id);
+      return;
+    }
+
     try {
       await deleteItem(id);
     } catch (error) {
-      console.error("Failed to delete item", error);
-      alert("刪除失敗，請再試");
+      console.error("Failed to delete item, saved offline", error);
+      queueDelete(id);
     }
   };
 

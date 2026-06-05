@@ -6,6 +6,10 @@ import type { Category } from "@/types/category";
 import { mockCategories, mockItems } from "@/lib/data/mockData";
 import { fetchCategories, fetchItems } from "@/lib/supabase/pantry";
 import { supabase } from "@/lib/supabase/client";
+import {
+  syncPendingActions,
+  getPendingActionCount,
+} from "@/lib/offline/pendingActions";
 
 type PantryContextType = {
   items: Item[];
@@ -13,6 +17,10 @@ type PantryContextType = {
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
   isHydrated: boolean;
+  isOnline: boolean;
+  isSyncing: boolean;
+  pendingActionCount: number;
+  refreshPendingActionCount: () => void;
 };
 
 const ITEMS_STORAGE_KEY = "shiba-pantry-items";
@@ -25,12 +33,18 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>(mockCategories);
   const [isHydrated, setIsHydrated] = useState(false);
 
+  const [isOnline, setIsOnline] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [pendingActionCount, setPendingActionCount] = useState(0);
+
+  const refreshPendingActionCount = () => {
+    setPendingActionCount(getPendingActionCount());
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
         const cloudCategories = await fetchCategories();
-        console.log("cloudCategories", cloudCategories);
-
         setCategories(cloudCategories);
         localStorage.setItem(
           CATEGORIES_STORAGE_KEY,
@@ -47,8 +61,6 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const cloudItems = await fetchItems();
-        console.log("cloudItems", cloudItems);
-
         setItems(cloudItems);
         localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(cloudItems));
       } catch (itemError) {
@@ -60,6 +72,7 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      setPendingActionCount(getPendingActionCount());
       setIsHydrated(true);
     }
 
@@ -67,6 +80,55 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleOnlineStatus = async () => {
+      const online = navigator.onLine;
+
+      setIsOnline(online);
+      setPendingActionCount(getPendingActionCount());
+
+      if (!online) return;
+
+      try {
+        setIsSyncing(true);
+
+        await syncPendingActions();
+
+        const latestCategories = await fetchCategories();
+        const latestItems = await fetchItems();
+
+        setCategories(latestCategories);
+        setItems(latestItems);
+
+        localStorage.setItem(
+          CATEGORIES_STORAGE_KEY,
+          JSON.stringify(latestCategories)
+        );
+        localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(latestItems));
+
+        setPendingActionCount(getPendingActionCount());
+      } catch (error) {
+        console.error("Failed to sync pending actions", error);
+      } finally {
+        setIsSyncing(false);
+      }
+    };
+
+    handleOnlineStatus();
+
+    window.addEventListener("online", handleOnlineStatus);
+    window.addEventListener("offline", handleOnlineStatus);
+
+    return () => {
+      window.removeEventListener("online", handleOnlineStatus);
+      window.removeEventListener("offline", handleOnlineStatus);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOnline) return;
+
     const channel = supabase
       .channel("pantry-sync")
       .on(
@@ -114,7 +176,7 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [isOnline]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -135,6 +197,10 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
         categories,
         setCategories,
         isHydrated,
+        isOnline,
+        isSyncing,
+        pendingActionCount,
+        refreshPendingActionCount,
       }}
     >
       {children}
@@ -151,4 +217,3 @@ export function usePantry() {
 
   return context;
 }
-
