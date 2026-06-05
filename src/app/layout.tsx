@@ -8,8 +8,11 @@ export const metadata: Metadata = {
   title: "306 Pantry",
   description: "Nana Pantry",
   applicationName: "306 Pantry",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
-
 export default function RootLayout({
   children,
 }: {
