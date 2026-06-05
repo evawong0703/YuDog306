@@ -144,12 +144,11 @@ export default function AddItemModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30">
-      <div
-        {...handlers}
-        className="max-h-[92vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-white p-5"
-      >
-        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-gray-200" />
-
+      <div className="max-h-[92vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-white p-5">
+        <div
+          {...handlers}
+          className="mx-auto mb-4 h-2 w-16 rounded-full bg-gray-200"
+        />
         <h2 className="text-center text-lg font-bold text-[#8b5e3c]">
           {editingItem ? "編輯貨品 ✏️" : "新增貨品 🐾"}
         </h2>
