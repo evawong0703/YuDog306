@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import type { Category } from "@/types/category";
 import type { Item } from "@/types/item";
-import { useSwipeable } from "react-swipeable";
 
 type Props = {
   open: boolean;
@@ -45,11 +45,22 @@ export default function AddItemModal({
   useEffect(() => {
     if (!open) return;
 
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
     if (editingItem) {
       setName(editingItem.name);
       setCategoryId(editingItem.categoryId);
       setQty(String(editingItem.qty));
-      setMinQty(String(editingItem.minQty));
+      setMinQty(String(editingItem.minQty ?? 0));
       setUnit(editingItem.unit ?? "");
       setStore(editingItem.store ?? "");
       setExpireDate(editingItem.expireDate ?? "");
@@ -122,7 +133,7 @@ export default function AddItemModal({
       categoryId: finalCategoryId,
       categoryName: selectedCategory.name,
       qty: Number(qty) || 0,
-      minQty: Number(minQty ?? 0),
+      minQty: Number(minQty) || 0,
       unit: unit.trim(),
       store: store.trim(),
       price: finalPrice,
@@ -143,12 +154,20 @@ export default function AddItemModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30">
-      <div className="max-h-[92vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-white p-5">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 overscroll-contain"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[92dvh] w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-5"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
           {...handlers}
-          className="mx-auto mb-4 h-2 w-16 rounded-full bg-gray-200"
+          onClick={onClose}
+          className="mx-auto mb-4 h-2 w-16 cursor-pointer rounded-full bg-gray-200"
         />
+
         <h2 className="text-center text-lg font-bold text-[#8b5e3c]">
           {editingItem ? "編輯貨品 ✏️" : "新增貨品 🐾"}
         </h2>
@@ -274,7 +293,7 @@ export default function AddItemModal({
           </div>
         </div>
 
-        <div className="mt-5 space-y-2">
+        <div className="mt-5 space-y-2 pb-4">
           <button
             onClick={handleSubmit}
             className="w-full rounded-2xl bg-[#8b5e3c] py-3 font-semibold text-white"
