@@ -18,7 +18,7 @@ export const mockItems: Item[] = [
     qty: 2,
     minQty: 2,
     unit: "盒",
-    expireMonth: "2026-06",
+    expireDate: "2026-06-30",
     note: "早餐用",
     prices: [{ id: "p1", price: 1.8, date: "2026-04" }],
   },

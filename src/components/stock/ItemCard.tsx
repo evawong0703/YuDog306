@@ -20,6 +20,44 @@ function formatDate(value?: string) {
   });
 }
 
+function getExpiryStatus(expireDate?: string) {
+  if (!expireDate) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const expiry = new Date(expireDate);
+  expiry.setHours(0, 0, 0, 0);
+
+  const diffDays = Math.ceil(
+    (expiry.getTime() - today.getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays < 0) {
+    return {
+      text: `❌ 已過期 ${Math.abs(diffDays)} 日`,
+      color: "text-red-600",
+    };
+  }
+
+  if (diffDays <= 7) {
+    return {
+      text: `🚨 ${diffDays} 日內到期`,
+      color: "text-red-600",
+    };
+  }
+
+  if (diffDays <= 30) {
+    return {
+      text: `⚠️ ${diffDays} 日後到期`,
+      color: "text-yellow-700",
+    };
+  }
+
+  return null;
+}
+
 export default function ItemCard({
   item,
   onIncrease,
@@ -29,6 +67,7 @@ export default function ItemCard({
 }: Props) {
   const isLowStock = item.qty < item.minQty;
   const isWarningStock = item.qty === item.minQty;
+  const expiryStatus = getExpiryStatus(item.expireDate);
 
   return (
     <div
@@ -42,7 +81,9 @@ export default function ItemCard({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#3d2a1a]">{item.name}</h2>
+          <h2 className="text-xl font-bold text-[#3d2a1a]">
+            {item.name}
+          </h2>
 
           <div className="mt-4 text-sm text-gray-500">
             數量：
@@ -59,10 +100,6 @@ export default function ItemCard({
             </span>
           </div>
 
-          <div className="mt-1 text-sm text-gray-400">
-            最低：{item.minQty} {item.unit}
-          </div>
-
           {isLowStock && (
             <div className="mt-2 text-sm font-semibold text-red-600">
               🔴 需要補貨
@@ -75,8 +112,17 @@ export default function ItemCard({
             </div>
           )}
 
+          {expiryStatus && (
+            <div
+              className={`mt-2 text-sm font-semibold ${expiryStatus.color}`}
+            >
+              {expiryStatus.text}
+            </div>
+          )}
+
           <div className="mt-2 text-xs text-gray-400">
-            最後更新：{formatDate(item.updatedAt ?? item.createdAt)}
+            最後更新：
+            {formatDate(item.updatedAt ?? item.createdAt)}
           </div>
         </div>
 

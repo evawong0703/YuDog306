@@ -13,8 +13,9 @@ export type Item = {
   minQty: number;
   unit: string;
   note?: string;
-  expireMonth?: string;
+  expireDate?: string;
   store?: string;
+  price?: number | null;
   prices: PriceRecord[];
   createdAt?: string;
   updatedAt?: string;

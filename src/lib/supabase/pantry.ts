@@ -11,11 +11,7 @@ export async function fetchCategories(): Promise<Category[]> {
   if (error) throw error;
 
   return [
-    {
-      id: "all",
-      name: "全部",
-      emoji: "🐾",
-    },
+    { id: "all", name: "全部", emoji: "🐾" },
     ...(data ?? []).map((cat) => ({
       id: cat.id,
       name: cat.name,
@@ -36,7 +32,8 @@ export async function fetchItems(): Promise<Item[]> {
       unit,
       note,
       store,
-      expire_month,
+      price,
+      expire_date,
       prices,
       created_at,
       updated_at,
@@ -58,7 +55,8 @@ export async function fetchItems(): Promise<Item[]> {
     unit: row.unit ?? "",
     note: row.note ?? "",
     store: row.store ?? "",
-    expireMonth: row.expire_month ?? "",
+    price: row.price ?? null,
+    expireDate: row.expire_date ?? "",
     prices: row.prices ?? [],
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -113,20 +111,19 @@ export async function deleteCategory(id: string) {
 }
 
 export async function createItem(item: Item) {
-  const { error } = await supabase
-    .from("items")
-    .insert({
-      id: item.id,
-      name: item.name,
-      category_id: item.categoryId,
-      qty: item.qty,
-      min_qty: item.minQty,
-      unit: item.unit,
-      note: item.note ?? null,
-      store: item.store ?? null,
-      expire_month: item.expireMonth ?? null,
-      prices: item.prices ?? [],
-    });
+  const { error } = await supabase.from("items").insert({
+    id: item.id,
+    name: item.name,
+    category_id: item.categoryId,
+    qty: item.qty,
+    min_qty: item.minQty,
+    unit: item.unit,
+    note: item.note ?? null,
+    store: item.store ?? null,
+    price: item.price ?? null,
+    expire_date: item.expireDate || null,
+    prices: item.prices ?? [],
+  });
 
   if (error) throw error;
 }
@@ -142,7 +139,8 @@ export async function updateItem(item: Item) {
       unit: item.unit,
       note: item.note ?? null,
       store: item.store ?? null,
-      expire_month: item.expireMonth ?? null,
+      price: item.price ?? null,
+      expire_date: item.expireDate || null,
       prices: item.prices ?? [],
       updated_at: new Date().toISOString(),
     })

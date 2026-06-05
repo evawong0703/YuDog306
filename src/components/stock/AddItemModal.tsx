@@ -31,7 +31,7 @@ export default function AddItemModal({
   const [unit, setUnit] = useState("");
   const [store, setStore] = useState("");
   const [price, setPrice] = useState("");
-  const [expireMonth, setExpireMonth] = useState("");
+  const [expireDate, setExpireDate] = useState("");
   const [note, setNote] = useState("");
 
   useEffect(() => {
@@ -44,11 +44,14 @@ export default function AddItemModal({
       setMinQty(String(editingItem.minQty));
       setUnit(editingItem.unit ?? "");
       setStore(editingItem.store ?? "");
-      setExpireMonth(editingItem.expireMonth ?? "");
-
-      const latestPrice = editingItem.prices?.[0]?.price;
-      setPrice(latestPrice ? String(latestPrice) : "");
-
+      setExpireDate(editingItem.expireDate ?? "");
+      setPrice(
+        editingItem.price != null
+          ? String(editingItem.price)
+          : editingItem.prices?.[0]?.price
+          ? String(editingItem.prices[0].price)
+          : ""
+      );
       setNote(editingItem.note ?? "");
       return;
     }
@@ -60,7 +63,7 @@ export default function AddItemModal({
     setUnit("");
     setStore("");
     setPrice("");
-    setExpireMonth("");
+    setExpireDate("");
     setNote("");
   }, [open, editingItem, firstRealCategory?.id]);
 
@@ -91,13 +94,15 @@ export default function AddItemModal({
     }
 
     const parsedPrice = Number(price);
+    const finalPrice =
+      !Number.isNaN(parsedPrice) && parsedPrice > 0 ? parsedPrice : null;
 
     const prices =
-      !Number.isNaN(parsedPrice) && parsedPrice > 0
+      finalPrice !== null
         ? [
             {
               id: editingItem?.prices?.[0]?.id ?? crypto.randomUUID(),
-              price: parsedPrice,
+              price: finalPrice,
               date: new Date().toISOString().slice(0, 10),
             },
           ]
@@ -112,7 +117,8 @@ export default function AddItemModal({
       minQty: Number(minQty) || 1,
       unit: unit.trim(),
       store: store.trim(),
-      expireMonth,
+      price: finalPrice,
+      expireDate: expireDate.trim() || undefined,
       note: note.trim(),
       prices,
       createdAt: editingItem?.createdAt,
@@ -238,9 +244,9 @@ export default function AddItemModal({
               到期日
             </label>
             <input
-              type="month"
-              value={expireMonth}
-              onChange={(e) => setExpireMonth(e.target.value)}
+              type="date"
+              value={expireDate}
+              onChange={(e) => setExpireDate(e.target.value)}
               className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
