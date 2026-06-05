@@ -92,6 +92,15 @@ export default function AddItemModal({
 
   const handleSubmit = () => {
     const trimmedName = name.trim();
+    
+    if (!trimmedName) {
+      alert("請輸入貨品名稱");
+      return;
+    }
+
+    const normalizeItemName = (value: string) =>
+      value.trim().toLowerCase().replace(/[-_\s]+/g, "");
+    
     const duplicatedItem = items.find((item) => {
       if (editingItem && item.id === editingItem.id) {
         return false;
@@ -107,12 +116,6 @@ export default function AddItemModal({
       alert("已存在相同貨品名稱");
       return;
     }
-    
-    if (!trimmedName) {
-      alert("請輸入貨品名稱");
-      return;
-    }
-
     const finalCategoryId = categoryId || firstRealCategory?.id || "";
 
     if (!finalCategoryId) {
