@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Category } from "@/types/category";
 import type { Item } from "@/types/item";
+import { useSwipeable } from "react-swipeable";
 
 type Props = {
   open: boolean;
@@ -33,6 +34,13 @@ export default function AddItemModal({
   const [price, setPrice] = useState("");
   const [expireDate, setExpireDate] = useState("");
   const [note, setNote] = useState("");
+
+  const handlers = useSwipeable({
+    onSwipedDown: () => {
+      onClose();
+    },
+    trackTouch: true,
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -136,7 +144,10 @@ export default function AddItemModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30">
-      <div className="max-h-[92vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-white p-5">
+      <div
+        {...handlers}
+        className="max-h-[92vh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-white p-5"
+      >
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-gray-200" />
 
         <h2 className="text-center text-lg font-bold text-[#8b5e3c]">
