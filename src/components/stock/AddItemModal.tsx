@@ -181,7 +181,7 @@ export default function AddItemModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="例如：燕麥奶"
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
 
@@ -192,7 +192,7 @@ export default function AddItemModal({
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             >
               {safeCategories
                 .filter((c) => c.id !== "all")
@@ -213,7 +213,7 @@ export default function AddItemModal({
                 type="number"
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
-                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
               />
             </div>
 
@@ -225,7 +225,7 @@ export default function AddItemModal({
                 type="number"
                 value={minQty}
                 onChange={(e) => setMinQty(e.target.value)}
-                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function AddItemModal({
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
               placeholder="例如：盒 / 包 / 樽"
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
 
@@ -250,7 +250,7 @@ export default function AddItemModal({
               value={store}
               onChange={(e) => setStore(e.target.value)}
               placeholder="例如：Tesco / Costco / Amazon"
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
 
@@ -264,7 +264,7 @@ export default function AddItemModal({
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="例如：2.50"
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
 
@@ -276,7 +276,7 @@ export default function AddItemModal({
               type="date"
               value={expireDate}
               onChange={(e) => setExpireDate(e.target.value)}
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
 
@@ -288,7 +288,7 @@ export default function AddItemModal({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="可留空"
-              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
         </div>
