@@ -27,7 +27,7 @@ export default function AddItemModal({
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [qty, setQty] = useState("0");
-  const [minQty, setMinQty] = useState("1");
+  const [minQty, setMinQty] = useState("0");
   const [unit, setUnit] = useState("");
   const [store, setStore] = useState("");
   const [price, setPrice] = useState("");
