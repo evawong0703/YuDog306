@@ -59,7 +59,7 @@ export default function AddItemModal({
     setName("");
     setCategoryId(firstRealCategory?.id ?? "");
     setQty("0");
-    setMinQty("1");
+    setMinQty("0");
     setUnit("");
     setStore("");
     setPrice("");
