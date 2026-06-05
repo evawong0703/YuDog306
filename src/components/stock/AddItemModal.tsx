@@ -114,7 +114,7 @@ export default function AddItemModal({
       categoryId: finalCategoryId,
       categoryName: selectedCategory.name,
       qty: Number(qty) || 0,
-      minQty: Number(minQty) || 1,
+      minQty: Number(minQty ?? 0),
       unit: unit.trim(),
       store: store.trim(),
       price: finalPrice,

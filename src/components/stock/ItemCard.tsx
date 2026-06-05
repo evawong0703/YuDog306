@@ -66,7 +66,7 @@ export default function ItemCard({
   onDelete,
 }: Props) {
   const isLowStock = item.qty < item.minQty;
-  const isWarningStock = item.qty === item.minQty;
+  const isWarningStock =   item.minQty > 0 && item.qty === item.minQty;
   const expiryStatus = getExpiryStatus(item.expireDate);
 
   return (
