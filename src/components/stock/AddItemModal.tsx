@@ -155,11 +155,11 @@ export default function AddItemModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 overscroll-contain"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-hidden bg-black/30"
       onClick={onClose}
     >
       <div
-        className="max-h-[92dvh] w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-5"
+        className="h-[85dvh] w-full max-w-[480px] overflow-y-auto overflow-x-hidden overscroll-y-contain rounded-t-3xl bg-white p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -181,7 +181,7 @@ export default function AddItemModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="例如：燕麥奶"
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
 
@@ -192,7 +192,7 @@ export default function AddItemModal({
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             >
               {safeCategories
                 .filter((c) => c.id !== "all")
@@ -213,7 +213,7 @@ export default function AddItemModal({
                 type="number"
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
-                className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
               />
             </div>
 
@@ -225,7 +225,7 @@ export default function AddItemModal({
                 type="number"
                 value={minQty}
                 onChange={(e) => setMinQty(e.target.value)}
-                className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+                className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function AddItemModal({
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
               placeholder="例如：盒 / 包 / 樽"
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
 
@@ -250,7 +250,7 @@ export default function AddItemModal({
               value={store}
               onChange={(e) => setStore(e.target.value)}
               placeholder="例如：Tesco / Costco / Amazon"
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
 
@@ -264,7 +264,7 @@ export default function AddItemModal({
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="例如：2.50"
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
 
@@ -276,7 +276,7 @@ export default function AddItemModal({
               type="date"
               value={expireDate}
               onChange={(e) => setExpireDate(e.target.value)}
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
 
@@ -288,12 +288,12 @@ export default function AddItemModal({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="可留空"
-              className="w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 outline-none"
             />
           </div>
         </div>
 
-        <div className="mt-5 space-y-2 pb-4">
+        <div className="mt-5 space-y-2 pb-28">
           <button
             onClick={handleSubmit}
             className="w-full rounded-2xl bg-[#8b5e3c] py-3 font-semibold text-white"
