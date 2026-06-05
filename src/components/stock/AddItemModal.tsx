@@ -100,16 +100,13 @@ export default function AddItemModal({
 
     const normalizeItemName = (value: string) =>
       value.trim().toLowerCase().replace(/[-_\s]+/g, "");
-    
+
     const duplicatedItem = items.find((item) => {
       if (editingItem && item.id === editingItem.id) {
         return false;
       }
 
-      return (
-        item.name.trim().toLowerCase() ===
-        trimmedName.toLowerCase()
-      );
+      return normalizeItemName(item.name) === normalizeItemName(trimmedName);
     });
 
     if (duplicatedItem) {
