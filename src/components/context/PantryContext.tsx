@@ -21,12 +21,15 @@ type PantryContextType = {
   isSyncing: boolean;
   pendingActionCount: number;
   refreshPendingActionCount: () => void;
+  notificationEnabled: boolean;
+  setNotificationEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ITEMS_STORAGE_KEY = "shiba-pantry-items";
 const CATEGORIES_STORAGE_KEY = "shiba-pantry-categories";
 
 const PantryContext = createContext<PantryContextType | undefined>(undefined);
+const [notificationEnabled, setNotificationEnabled] = useState(false);
 
 export function PantryProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<Item[]>(mockItems);
@@ -40,6 +43,13 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
   const refreshPendingActionCount = () => {
     setPendingActionCount(getPendingActionCount());
   };
+
+  useEffect(() => {
+    const enabled =
+      localStorage.getItem("notification-enabled") === "true";
+
+    setNotificationEnabled(enabled);
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -201,6 +211,8 @@ export function PantryProvider({ children }: { children: React.ReactNode }) {
         isSyncing,
         pendingActionCount,
         refreshPendingActionCount,
+        notificationEnabled,
+        setNotificationEnabled,
       }}
     >
       {children}
