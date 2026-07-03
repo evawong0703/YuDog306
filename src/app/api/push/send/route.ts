@@ -4,6 +4,10 @@ import { webpush } from "@/lib/push/webpush";
 
 export async function POST(request: Request) {
   const body = await request.json();
+    // 加喺呢度
+  console.log("ENV SECRET =", process.env.PUSH_API_SECRET);
+  console.log("BODY SECRET =", body.secret);
+  console.log("MATCH =", process.env.PUSH_API_SECRET === body.secret);
 
   if (body.secret !== process.env.PUSH_API_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
