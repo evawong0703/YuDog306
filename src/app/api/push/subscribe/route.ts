@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase/client";
+import { supabaseServer } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   const subscription = await request.json();
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error } = await supabase.from("push_subscriptions").upsert(
+  const { error } = await supabaseServer.from("push_subscriptions").upsert(
     {
       endpoint: subscription.endpoint,
       subscription,
