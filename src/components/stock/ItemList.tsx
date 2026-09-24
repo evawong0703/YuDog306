@@ -76,10 +76,15 @@ export default function ItemList({
     const target = items.find((item) => item.id === id);
     if (!target) return;
 
-    const updatedItem = { ...target, qty: target.qty + 1 };
+    const updatedItem = {
+      ...target,
+      qty: target.qty + 1,
+    };
 
     setItems((prev) =>
-      prev.map((item) => (item.id === id ? updatedItem : item))
+      prev.map((item) =>
+        item.id === id ? updatedItem : item
+      )
     );
 
     if (!isOnline) {
@@ -90,19 +95,28 @@ export default function ItemList({
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to update item, saved offline", error);
+      console.error(
+        "Failed to update item, saved offline",
+        error
+      );
       queueUpdate(updatedItem);
     }
   };
 
   const handleDecrease = async (id: string) => {
     const target = items.find((item) => item.id === id);
+
     if (!target || target.qty <= 0) return;
 
-    const updatedItem = { ...target, qty: target.qty - 1 };
+    const updatedItem = {
+      ...target,
+      qty: target.qty - 1,
+    };
 
     setItems((prev) =>
-      prev.map((item) => (item.id === id ? updatedItem : item))
+      prev.map((item) =>
+        item.id === id ? updatedItem : item
+      )
     );
 
     if (!isOnline) {
@@ -113,7 +127,10 @@ export default function ItemList({
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to update item, saved offline", error);
+      console.error(
+        "Failed to update item, saved offline",
+        error
+      );
       queueUpdate(updatedItem);
     }
   };
@@ -129,21 +146,33 @@ export default function ItemList({
     try {
       await createItem(newItem);
     } catch (error) {
-      console.error("Failed to create item, saved offline", error);
+      console.error(
+        "Failed to create item, saved offline",
+        error
+      );
       queueCreate(newItem);
     }
   };
 
   const handleEditClick = (id: string) => {
-    const found = items.find((item) => item.id === id) ?? null;
+    const found =
+      items.find((item) => item.id === id) ?? null;
+
     setEditingItem(found);
     setOpenAddModal(true);
   };
 
-  const handleEditItem = async (updatedItem: Item) => {
+  const handleEditItem = async (
+    updatedItem: Item
+  ) => {
     setItems((prev) =>
-      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+      prev.map((item) =>
+        item.id === updatedItem.id
+          ? updatedItem
+          : item
+      )
     );
+
     setEditingItem(null);
 
     if (!isOnline) {
@@ -154,16 +183,23 @@ export default function ItemList({
     try {
       await updateItem(updatedItem);
     } catch (error) {
-      console.error("Failed to edit item, saved offline", error);
+      console.error(
+        "Failed to edit item, saved offline",
+        error
+      );
       queueUpdate(updatedItem);
     }
   };
 
   const handleDeleteItem = async (id: string) => {
-    const confirmed = window.confirm("確定刪除呢件貨品？");
+    const confirmed =
+      window.confirm("確定刪除呢件貨品？");
+
     if (!confirmed) return;
 
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prev) =>
+      prev.filter((item) => item.id !== id)
+    );
 
     if (!isOnline) {
       queueDelete(id);
@@ -173,29 +209,76 @@ export default function ItemList({
     try {
       await deleteItem(id);
     } catch (error) {
-      console.error("Failed to delete item, saved offline", error);
+      console.error(
+        "Failed to delete item, saved offline",
+        error
+      );
       queueDelete(id);
     }
   };
 
+  // -------------------------
+  // Filter items
+  // -------------------------
   const filteredItems = items.filter((item) => {
     const matchesCategory =
-      activeCategory === "all" || item.categoryId === activeCategory;
+      activeCategory === "all" ||
+      item.categoryId === activeCategory;
 
-    const keyword = searchText.trim().toLowerCase();
+    const keyword =
+      searchText.trim().toLowerCase();
+
     const matchesSearch =
       keyword === "" ||
-      item.name.toLowerCase().includes(keyword) ||
-      item.categoryName.toLowerCase().includes(keyword) ||
-      (item.note ?? "").toLowerCase().includes(keyword);
+      item.name
+        .toLowerCase()
+        .includes(keyword) ||
+      item.categoryName
+        .toLowerCase()
+        .includes(keyword) ||
+      (item.note ?? "")
+        .toLowerCase()
+        .includes(keyword) ||
+      (item.storageLocation ?? "")
+        .toLowerCase()
+        .includes(keyword);
 
     return matchesCategory && matchesSearch;
   });
 
+  // -------------------------
+  // Sort by expiry date
+  // Earliest expiry first
+  // Items without expiry date go last
+  // -------------------------
+  const sortedItems = [...filteredItems].sort(
+    (a, b) => {
+      if (!a.expireDate && !b.expireDate) {
+        return 0;
+      }
+
+      if (!a.expireDate) {
+        return 1;
+      }
+
+      if (!b.expireDate) {
+        return -1;
+      }
+
+      return (
+        new Date(a.expireDate).getTime() -
+        new Date(b.expireDate).getTime()
+      );
+    }
+  );
+
   return (
     <>
       <div className="mt-4">
-        <SearchBar value={searchText} onChange={setSearchText} />
+        <SearchBar
+          value={searchText}
+          onChange={setSearchText}
+        />
 
         <CategoryTabs
           categories={categories}
@@ -205,8 +288,8 @@ export default function ItemList({
         />
 
         <div className="mt-3">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
+          {sortedItems.length > 0 ? (
+            sortedItems.map((item) => (
               <ItemCard
                 key={item.id}
                 item={item}
@@ -246,3 +329,4 @@ export default function ItemList({
     </>
   );
 }
+
