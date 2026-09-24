@@ -33,6 +33,7 @@ export default function AddItemModal({
   const [minQty, setMinQty] = useState("0");
   const [unit, setUnit] = useState("");
   const [store, setStore] = useState("");
+  const [storageLocation, setStorageLocation] = useState("");
   const [price, setPrice] = useState("");
   const [expireDate, setExpireDate] = useState("");
   const [note, setNote] = useState("");
@@ -65,6 +66,7 @@ export default function AddItemModal({
       setMinQty(String(editingItem.minQty ?? 0));
       setUnit(editingItem.unit ?? "");
       setStore(editingItem.store ?? "");
+      setStorageLocation(editingItem.storageLocation ?? "");
       setExpireDate(editingItem.expireDate ?? "");
       setPrice(
         editingItem.price != null
@@ -83,6 +85,7 @@ export default function AddItemModal({
     setMinQty("0");
     setUnit("");
     setStore("");
+    setStorageLocation("");
     setPrice("");
     setExpireDate("");
     setNote("");
@@ -153,6 +156,7 @@ export default function AddItemModal({
       minQty: Number(minQty) || 0,
       unit: unit.trim(),
       store: store.trim(),
+      storageLocation: storageLocation.trim(),
       price: finalPrice,
       expireDate: expireDate.trim() || undefined,
       note: note.trim(),
@@ -270,7 +274,19 @@ export default function AddItemModal({
               className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
             />
           </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-gray-500">
+              儲存地點
+            </label>
 
+            <input
+              value={storageLocation}
+              onChange={(e) => setStorageLocation(e.target.value)}
+              placeholder="例如：雪櫃 / 廚房櫃 / 儲物房"
+              className="box-border w-full rounded-xl border border-[#e8d4b8] px-4 py-3 text-[#3d2a1a] outline-none"
+            />
+          </div>
+`
           <div>
             <label className="mb-1 block text-xs font-semibold text-gray-500">
               價錢 £

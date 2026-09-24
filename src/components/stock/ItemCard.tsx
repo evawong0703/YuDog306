@@ -120,10 +120,17 @@ export default function ItemCard({
             </div>
           )}
 
-          <div className="mt-2 text-xs text-gray-400">
-            最後更新：
-            {formatDate(item.updatedAt ?? item.createdAt)}
+         <div className="mt-2 space-y-1 text-xs text-gray-500">
+          {item.storageLocation && (
+            <div>
+              📍 儲存地點：{item.storageLocation}
+            </div>
+          )}
+
+          <div>
+            📅 到期日：{formatDate(item.expireDate)}
           </div>
+        </div>
         </div>
 
         <div className="text-sm font-semibold text-gray-500">

@@ -15,8 +15,10 @@ export type Item = {
   note?: string;
   expireDate?: string;
   store?: string;
+  storageLocation?: string;
   price?: number | null;
   prices: PriceRecord[];
   createdAt?: string;
   updatedAt?: string;
+  
 };
